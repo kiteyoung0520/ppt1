@@ -1,0 +1,32 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # 當有程式碼推送到 main 分支時，觸發機器人
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允許機器人幫你發布網頁
+
+    steps:
+      - name: 下載程式碼 🛎️
+        uses: actions/checkout@v4
+      
+      - name: 安裝 Node.js 環境 🔧
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: 安裝套件與打包編譯 📦
+        run: |
+          npm install
+          npm run build
+          
+      - name: 發布到 GitHub Pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # 將打包好的 dist 資料夾發布出去
